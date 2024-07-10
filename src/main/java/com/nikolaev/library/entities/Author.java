@@ -6,10 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The Author class represents an author of books.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -27,27 +30,21 @@ public class Author {
     private String name;
 
     @Column(name = "date_of_birth")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
-    @OneToMany
-    @JoinColumn(name = "book_id")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Book> books;
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Author author)) return false;
-
-        return getId().equals(author.getId()) && Objects.equals(getName(), author.getName()) && Objects.equals(getDateOfBirth(), author.getDateOfBirth()) && Objects.equals(getBooks(), author.getBooks());
+        return Objects.equals(id, author.id) && Objects.equals(name, author.name) && Objects.equals(dateOfBirth, author.dateOfBirth);
     }
 
     @Override
     public int hashCode() {
-        int result = getId().hashCode();
-        result = 31 * result + Objects.hashCode(getName());
-        result = 31 * result + Objects.hashCode(getDateOfBirth());
-        result = 31 * result + Objects.hashCode(getBooks());
-        return result;
+        return Objects.hash(id, name, dateOfBirth);
     }
 
     @Override

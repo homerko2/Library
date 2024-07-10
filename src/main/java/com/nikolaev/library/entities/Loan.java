@@ -6,10 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The Loan class represents a loan made by a member for one or more books.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -23,30 +26,28 @@ public class Loan {
     private Long id;
 
     @Column(name = "loan_date")
-    private Date loanDate;
+    private LocalDate loanDate;
 
     @Column(name = "return_date")
-    private Date returnDate;
+    private LocalDate returnDate;
 
-    @OneToMany
-    @JoinColumn(name = "book_id")
+    @OneToMany(mappedBy = "loan")
     private List<Book> books;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Loan loan)) return false;
-
-        return getId().equals(loan.getId()) && Objects.equals(getBooks(), loan.getBooks()) && Objects.equals(getLoanDate(), loan.getLoanDate()) && Objects.equals(getReturnDate(), loan.getReturnDate());
+        return Objects.equals(id, loan.id) && Objects.equals(loanDate, loan.loanDate) && Objects.equals(returnDate, loan.returnDate) && Objects.equals(books, loan.books);
     }
 
     @Override
     public int hashCode() {
-        int result = getId().hashCode();
-        result = 31 * result + Objects.hashCode(getBooks());
-        result = 31 * result + Objects.hashCode(getLoanDate());
-        result = 31 * result + Objects.hashCode(getReturnDate());
-        return result;
+        return Objects.hash(id, loanDate, returnDate, books);
     }
 
     @Override

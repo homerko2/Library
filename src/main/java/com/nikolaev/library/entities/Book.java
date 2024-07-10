@@ -9,6 +9,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+/**
+ * The Book class represents a book entity.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -32,26 +35,24 @@ public class Book {
     @Column(name = "price")
     private BigDecimal price;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Author author;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "loan_id")
+    private Loan loan;
+
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Book book)) return false;
-
-        return getId().equals(book.getId()) && Objects.equals(getTitle(), book.getTitle()) && Objects.equals(getGenre(), book.getGenre()) && Objects.equals(getPrice(), book.getPrice()) && Objects.equals(getAuthor(), book.getAuthor());
+        return Objects.equals(id, book.id) && Objects.equals(title, book.title) && Objects.equals(genre, book.genre) && Objects.equals(price, book.price);
     }
 
     @Override
     public int hashCode() {
-        int result = getId().hashCode();
-        result = 31 * result + Objects.hashCode(getTitle());
-        result = 31 * result + Objects.hashCode(getGenre());
-        result = 31 * result + Objects.hashCode(getPrice());
-        result = 31 * result + Objects.hashCode(getAuthor());
-        return result;
+        return Objects.hash(id, title, genre, price);
     }
 
     @Override

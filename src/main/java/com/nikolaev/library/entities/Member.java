@@ -9,6 +9,9 @@ import lombok.Setter;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The Member class represents a member of a library.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -32,31 +35,22 @@ public class Member {
     @Column(name = "phone_Number")
     private String phoneNumber;
 
-    @ManyToOne
-    @JoinColumn(name = "address_id")
-    private MemberAddress address;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberAddress> address;
 
-    @OneToMany
-    @JoinColumn(name = "loan_id")
-    private List<Loan> loan;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Loan> loans;
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Member member)) return false;
-
-        return getId().equals(member.getId()) && Objects.equals(getUsername(), member.getUsername()) && Objects.equals(getEmail(), member.getEmail()) && Objects.equals(getPhoneNumber(), member.getPhoneNumber()) && Objects.equals(getAddress(), member.getAddress()) && Objects.equals(getLoan(), member.getLoan());
+        return Objects.equals(id, member.id) && Objects.equals(username, member.username) && Objects.equals(email, member.email) && Objects.equals(phoneNumber, member.phoneNumber);
     }
 
     @Override
     public int hashCode() {
-        int result = getId().hashCode();
-        result = 31 * result + Objects.hashCode(getUsername());
-        result = 31 * result + Objects.hashCode(getEmail());
-        result = 31 * result + Objects.hashCode(getPhoneNumber());
-        result = 31 * result + Objects.hashCode(getAddress());
-        result = 31 * result + Objects.hashCode(getLoan());
-        return result;
+        return Objects.hash(id, username, email, phoneNumber);
     }
 
     @Override
@@ -67,7 +61,7 @@ public class Member {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address=" + address +
-                ", loan=" + loan +
+                ", loan=" + loans +
                 '}';
     }
 }

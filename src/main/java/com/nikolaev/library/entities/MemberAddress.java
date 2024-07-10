@@ -8,6 +8,9 @@ import lombok.Setter;
 
 import java.util.Objects;
 
+/**
+ * The MemberAddress class represents the address of a member.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -35,23 +38,20 @@ public class MemberAddress {
     @Column(name = "country")
     private String country;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof MemberAddress that)) return false;
-
-        return getId().equals(that.getId()) && Objects.equals(getStreet(), that.getStreet()) && Objects.equals(getHouseNumber(), that.getHouseNumber()) && Objects.equals(getZip(), that.getZip()) && Objects.equals(getCity(), that.getCity()) && Objects.equals(getCountry(), that.getCountry());
+        return Objects.equals(id, that.id) && Objects.equals(street, that.street) && Objects.equals(houseNumber, that.houseNumber) && Objects.equals(zip, that.zip) && Objects.equals(city, that.city) && Objects.equals(country, that.country);
     }
 
     @Override
     public int hashCode() {
-        int result = getId().hashCode();
-        result = 31 * result + Objects.hashCode(getStreet());
-        result = 31 * result + Objects.hashCode(getHouseNumber());
-        result = 31 * result + Objects.hashCode(getZip());
-        result = 31 * result + Objects.hashCode(getCity());
-        result = 31 * result + Objects.hashCode(getCountry());
-        return result;
+        return Objects.hash(id, street, houseNumber, zip, city, country);
     }
 
     @Override
